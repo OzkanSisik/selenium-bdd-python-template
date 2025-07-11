@@ -3,14 +3,12 @@ Behave environment configuration for browser setup and teardown.
 This file handles the lifecycle of the WebDriver instance for behave tests.
 """
 
-import os
 import logging
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.safari.options import Options as SafariOptions
 from config import config
 
-# Set up logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -25,7 +23,6 @@ def before_scenario(context, scenario):
     
     try:
         if config.browser == "chrome":
-            # Chrome setup using configuration
             options = ChromeOptions()
             browser_options = config.get_browser_options()
             
@@ -35,23 +32,18 @@ def before_scenario(context, scenario):
                 else:
                     options.add_argument(f"{option}={value}")
             
-            # Selenium Manager automatically downloads and manages ChromeDriver
             context.driver = webdriver.Chrome(options=options)
             logger.info("Chrome browser initialized successfully with Selenium Manager")
             
         elif config.browser == "safari":
-            # Safari setup (macOS only)
             context.driver = webdriver.Safari()
             logger.info("Safari browser initialized successfully")
             
         else:
             raise ValueError(f"Unsupported browser: {config.browser}")   
         
-        # Set timeouts from configuration
         context.driver.set_page_load_timeout(config.page_load_timeout)
         
-        # Store configuration in context for use in steps
-        setattr(context, 'test_config', config)
         logger.info("Browser setup completed successfully")
         
     except Exception as e:

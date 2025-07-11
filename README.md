@@ -26,16 +26,33 @@ behave
 
 ## Configuration
 
-Set environment variables or create a `.env` file:
+The framework uses environment-specific `.env` files for configuration:
 
+- `.env.production` (default if nothing is set)
+- `.env.development`
+- `.env.staging`
+
+**How it works:**
+- If you do NOT set the `ENVIRONMENT` variable, the project loads `.env.production` and uses production settings.
+- If you set `ENVIRONMENT=development` or `ENVIRONMENT=staging`, it loads the corresponding file.
+
+**To override the environment:**
 ```bash
-BASE_URL=https://www.demoblaze.com
-BROWSER=chrome
-HEADLESS=false
-EXPLICIT_WAIT=20
-TEST_USERNAME=ozkanuser
-TEST_PASSWORD=ozkanpass
+ENVIRONMENT=development behave
+ENVIRONMENT=staging behave
+ENVIRONMENT=production behave
 ```
+
+**Important:**
+- The default `BASE_URL` in `.env.development` is a placeholder (`*`). You must set it to a real URL to run tests in development mode.
+- Production config points to the live DemoBlaze site by default.
+
+### Environment Defaults:
+- **Production (default):** `https://www.demoblaze.com`, headless=true
+- **Development:** `*` (placeholder, must be changed), headless=false
+- **Staging:** `https://staging.example.com` (example), headless=true
+
+> **Note:** Replace placeholder URLs with your actual application URLs.
 
 ## Running Tests
 
