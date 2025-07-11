@@ -2,6 +2,8 @@
 
 A Python test automation framework using Selenium and Behave for BDD testing. Built for the DemoBlaze demo site but easily adaptable for other projects.
 
+**Note:** This is a framework template with basic test examples. It demonstrates the structure and setup but contains only a few simple test cases. You can extend it with your own comprehensive test scenarios.
+
 ## Quick Start
 
 ```bash
