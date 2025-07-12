@@ -7,7 +7,7 @@ from pathlib import Path
 
 def load_env_file(environment=None):
     """
-    Load environment variables from .env file based on environment.
+    Loads environment variables from .env file based on environment.
     
     Args:
         environment (str): Environment name (development, staging, production)

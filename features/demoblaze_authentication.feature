@@ -8,8 +8,7 @@ Feature: DemoBlaze User Authentication
 
   Scenario: Login with valid credentials
     When I click on the "Log in" link
-    And I enter username "ozkanuser"
-    And I enter password "ozkanpass"
+    And I enter username "testuser"
+    And I enter password "testpass"
     And I click the "Log in" button
-    Then I should see "Welcome ozkanuser" message
-    
+    Then I should see "Welcome testuser" message

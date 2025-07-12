@@ -4,50 +4,11 @@ Feature: DemoBlaze User Authentication # features/demoblaze_authentication.featu
   So that I can access personalized features
   Background:   # features/demoblaze_authentication.feature:6
 
-  Scenario: Login with valid credentials          # features/demoblaze_authentication.feature:9
-    Given I am on the DemoBlaze homepage          # features/steps/homepage_steps.py:5
-      Traceback (most recent call last):
-        File "/opt/homebrew/lib/python3.11/site-packages/behave/model.py", line 1329, in run
-          match.run(runner.context)
-        File "/opt/homebrew/lib/python3.11/site-packages/behave/matchers.py", line 98, in run
-          self.func(context, *args, **kwargs)
-        File "features/steps/homepage_steps.py", line 9, in step_am_on_demoblaze_homepage
-          context.home_page.navigate_to_homepage()
-        File "/Users/ozkansisik/Python Cucumber/otoframework/Pages/home_page.py", line 28, in navigate_to_homepage
-          self.driver.get(config.base_url)
-        File "/opt/homebrew/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 454, in get
-          self.execute(Command.GET, {"url": url})
-        File "/opt/homebrew/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 429, in execute
-          self.error_handler.check_response(response)
-        File "/opt/homebrew/lib/python3.11/site-packages/selenium/webdriver/remote/errorhandler.py", line 232, in check_response
-          raise exception_class(message, screen, stacktrace)
-      selenium.common.exceptions.InvalidArgumentException: Message: invalid argument
-        (Session info: chrome=138.0.7204.101)
-      Stacktrace:
-      0   chromedriver                        0x0000000100c20e6c cxxbridge1$str$ptr + 2722840
-      1   chromedriver                        0x0000000100c18d74 cxxbridge1$str$ptr + 2689824
-      2   chromedriver                        0x000000010076a260 cxxbridge1$string$len + 90252
-      3   chromedriver                        0x00000001007549f8 cxxbridge1$string$len + 2084
-      4   chromedriver                        0x0000000100752d08 chromedriver + 191752
-      5   chromedriver                        0x000000010075378c chromedriver + 194444
-      6   chromedriver                        0x000000010076d450 cxxbridge1$string$len + 103036
-      7   chromedriver                        0x00000001007f33bc cxxbridge1$string$len + 651752
-      8   chromedriver                        0x00000001007f2934 cxxbridge1$string$len + 649056
-      9   chromedriver                        0x00000001007a5834 cxxbridge1$string$len + 333408
-      10  chromedriver                        0x0000000100be3f88 cxxbridge1$str$ptr + 2473268
-      11  chromedriver                        0x0000000100be71f4 cxxbridge1$str$ptr + 2486176
-      12  chromedriver                        0x0000000100bc59d0 cxxbridge1$str$ptr + 2348924
-      13  chromedriver                        0x0000000100be7ab0 cxxbridge1$str$ptr + 2488412
-      14  chromedriver                        0x0000000100bb6a60 cxxbridge1$str$ptr + 2287628
-      15  chromedriver                        0x0000000100c079a0 cxxbridge1$str$ptr + 2619212
-      16  chromedriver                        0x0000000100c07b2c cxxbridge1$str$ptr + 2619608
-      17  chromedriver                        0x0000000100c189b0 cxxbridge1$str$ptr + 2688860
-      18  libsystem_pthread.dylib             0x000000018b392f94 _pthread_start + 136
-      19  libsystem_pthread.dylib             0x000000018b38dd34 thread_start + 8
-
-    When I click on the "Log in" link             # None
-    And I enter username "ozkanuser"              # None
-    And I enter password "ozkanpass"              # None
-    And I click the "Log in" button               # None
-    Then I should see "Welcome ozkanuser" message # None
+  Scenario: Login with valid credentials         # features/demoblaze_authentication.feature:9
+    Given I am on the DemoBlaze homepage         # features/steps/homepage_steps.py:5
+    When I click on the "Log in" link            # features/steps/navigation_steps.py:7
+    And I enter username "testuser"              # features/steps/login_steps.py:6
+    And I enter password "testpass"              # features/steps/login_steps.py:14
+    And I click the "Log in" button              # features/steps/login_steps.py:22
+    Then I should see "Welcome testuser" message # features/steps/navigation_steps.py:23
 

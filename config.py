@@ -37,20 +37,20 @@ class TestConfig:
         if self.environment == 'development':
             self.base_url = os.getenv('BASE_URL', 'http://localhost:3000')
             self.headless = os.getenv('HEADLESS', 'false').lower() == 'true'
-            self.test_username = os.getenv('TEST_USERNAME', 'dev_user')
-            self.test_password = os.getenv('TEST_PASSWORD', 'dev_pass')
+            self.test_username = os.getenv('TEST_USERNAME')
+            self.test_password = os.getenv('TEST_PASSWORD')
             
         elif self.environment == 'staging':
             self.base_url = os.getenv('BASE_URL', 'https://staging.example.com')
             self.headless = os.getenv('HEADLESS', 'true').lower() == 'true'
-            self.test_username = os.getenv('TEST_USERNAME', 'staging_user')
-            self.test_password = os.getenv('TEST_PASSWORD', 'staging_pass')
+            self.test_username = os.getenv('TEST_USERNAME')
+            self.test_password = os.getenv('TEST_PASSWORD')
             
         elif self.environment == 'production':
             self.base_url = os.getenv('BASE_URL', 'https://www.demoblaze.com')
             self.headless = os.getenv('HEADLESS', 'true').lower() == 'true'
-            self.test_username = os.getenv('TEST_USERNAME', 'prod_user')
-            self.test_password = os.getenv('TEST_PASSWORD', 'prod_pass')
+            self.test_username = os.getenv('TEST_USERNAME')
+            self.test_password = os.getenv('TEST_PASSWORD')
             
         else:
             raise ValueError(f"Unsupported environment: {self.environment}")
@@ -73,23 +73,7 @@ class TestConfig:
             
         return options.get(self.browser, {})
     
-    def get_test_user_credentials(self, user_type: str = 'default') -> dict:
-        """Get test user credentials based on type"""
-        credentials = {
-            'default': {
-                'username': self.test_username,
-                'password': self.test_password
-            },
-            'admin': {
-                'username': os.getenv('ADMIN_USERNAME', 'admin'),
-                'password': os.getenv('ADMIN_PASSWORD', 'adminpass')
-            },
-            'guest': {
-                'username': os.getenv('GUEST_USERNAME', 'guest'),
-                'password': os.getenv('GUEST_PASSWORD', 'guestpass')
-            }
-        }
-        return credentials.get(user_type, credentials['default'])
+
     
     def print_config(self):
         """Print current configuration for debugging"""
