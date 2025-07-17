@@ -11,7 +11,7 @@ def load_env_file(environment=None):
     
     Args:
         environment (str): Environment name (development, staging, production)
-                          If None, tries to detect from ENVIRONMENT variable
+                          If None, uses ENVIRONMENT variable or defaults to production
     """
     if environment is None:
         environment = os.getenv('ENVIRONMENT', 'production')  # Default to production
