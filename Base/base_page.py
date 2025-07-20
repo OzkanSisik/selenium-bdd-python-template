@@ -1,7 +1,8 @@
 from selenium.common import NoSuchElementException, StaleElementReferenceException, TimeoutException, \
     ElementNotVisibleException, ElementNotSelectableException, ElementClickInterceptedException, \
     ElementNotInteractableException
-from config import config    
+# Technical constants (not business config)
+ 
 from selenium.webdriver.remote.webelement import WebElement
 import logging
 from functools import wraps
@@ -17,7 +18,7 @@ class BasePage:
         self.driver = driver
         #self.utils = WebDriverUtils(driver)
      
-        self.wait = WebDriverWait(self.driver, config.explicit_wait)
+        self.wait = WebDriverWait(self.driver, 10)
 
     def navigate_to(self, url):
         """

@@ -6,9 +6,41 @@ Feature: DemoBlaze User Authentication # features/demoblaze_authentication.featu
 
   Scenario: Login with valid credentials         # features/demoblaze_authentication.feature:9
     Given I am on the DemoBlaze homepage         # features/steps/homepage_steps.py:5
-    When I click on the "Log in" link            # features/steps/navigation_steps.py:7
-    And I enter username "testuser"              # features/steps/login_steps.py:6
-    And I enter password "testpass"              # features/steps/login_steps.py:14
-    And I click the "Log in" button              # features/steps/login_steps.py:22
-    Then I should see "Welcome testuser" message # features/steps/navigation_steps.py:23
+      Traceback (most recent call last):
+        File "/Users/ozkansisik/PycharmProjects/otoframework/.venv/lib/python3.9/site-packages/behave/model.py", line 1329, in run
+          match.run(runner.context)
+        File "/Users/ozkansisik/PycharmProjects/otoframework/.venv/lib/python3.9/site-packages/behave/matchers.py", line 98, in run
+          self.func(context, *args, **kwargs)
+        File "features/steps/homepage_steps.py", line 9, in step_am_on_demoblaze_homepage
+          context.home_page.navigate_to_homepage()
+        File "/Users/ozkansisik/Python Cucumber/otoframework/Pages/home_page.py", line 31, in navigate_to_homepage
+          self.wait_for_page_load()
+        File "/Users/ozkansisik/Python Cucumber/otoframework/Pages/home_page.py", line 36, in wait_for_page_load
+          self.wait.until(EC.presence_of_element_located(self.HEADER))
+        File "/Users/ozkansisik/PycharmProjects/otoframework/.venv/lib/python3.9/site-packages/selenium/webdriver/support/wait.py", line 146, in until
+          raise TimeoutException(message, screen, stacktrace)
+      selenium.common.exceptions.TimeoutException: Message: 
+      Stacktrace:
+      0   chromedriver                        0x000000010259755c cxxbridge1$str$ptr + 2731064
+      1   chromedriver                        0x000000010258f454 cxxbridge1$str$ptr + 2698032
+      2   chromedriver                        0x00000001020de3f8 cxxbridge1$string$len + 90664
+      3   chromedriver                        0x000000010212571c cxxbridge1$string$len + 382284
+      4   chromedriver                        0x0000000102166b1c cxxbridge1$string$len + 649548
+      5   chromedriver                        0x0000000102119a0c cxxbridge1$string$len + 333884
+      6   chromedriver                        0x000000010255a5e0 cxxbridge1$str$ptr + 2481340
+      7   chromedriver                        0x000000010255d848 cxxbridge1$str$ptr + 2494244
+      8   chromedriver                        0x000000010253b234 cxxbridge1$str$ptr + 2353424
+      9   chromedriver                        0x000000010255e104 cxxbridge1$str$ptr + 2496480
+      10  chromedriver                        0x000000010252c2e4 cxxbridge1$str$ptr + 2292160
+      11  chromedriver                        0x000000010257dff8 cxxbridge1$str$ptr + 2627284
+      12  chromedriver                        0x000000010257e184 cxxbridge1$str$ptr + 2627680
+      13  chromedriver                        0x000000010258f090 cxxbridge1$str$ptr + 2697068
+      14  libsystem_pthread.dylib             0x000000018b392f94 _pthread_start + 136
+      15  libsystem_pthread.dylib             0x000000018b38dd34 thread_start + 8
+
+    When I click on the "Log in" link            # None
+    And I enter username "testuser"              # None
+    And I enter password "testpass"              # None
+    And I click the "Log in" button              # None
+    Then I should see "Welcome testuser" message # None
 

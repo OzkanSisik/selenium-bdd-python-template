@@ -33,4 +33,7 @@ test_execution.log
 .env.local
 .env.development
 .env.test
-.env.production 
+.env.production
+
+# Configuration files (may contain sensitive data)
+settings.ini 

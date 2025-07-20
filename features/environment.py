@@ -7,7 +7,7 @@ import logging
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.safari.options import Options as SafariOptions
-from config import config
+from settings_manager import settings_manager
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -18,13 +18,30 @@ def before_scenario(context, scenario):
     Set up browser before each scenario.
     This runs before every test scenario in behave.
     """
-    logger.info(f"Setting up {config.browser} browser for scenario: {scenario.name}")
+    browser = settings_manager.get("browser", "chrome")
+    logger.info(f"Setting up {browser} browser for scenario: {scenario.name}")
     
     
     try:
-        if config.browser == "chrome":
+        if browser == "chrome":
             options = ChromeOptions()
-            browser_options = config.get_browser_options()
+            # Get browser options from settings
+            headless = settings_manager.get("headless", False)
+            window_width = settings_manager.get("window_width", 1920)
+            window_height = settings_manager.get("window_height", 1080)
+            
+            # Build browser options
+            browser_options = {
+                '--no-sandbox': True,
+                '--disable-dev-shm-usage': True,
+                '--disable-gpu': True,
+                '--window-size': f'{window_width},{window_height}',
+                '--disable-extensions': True,
+                '--disable-plugins': True
+            }
+            
+            if headless:
+                browser_options['--headless'] = True
             
             for option, value in browser_options.items():
                 if value is True:
@@ -35,14 +52,15 @@ def before_scenario(context, scenario):
             context.driver = webdriver.Chrome(options=options)
             logger.info("Chrome browser initialized successfully with Selenium Manager")
             
-        elif config.browser == "safari":
+        elif browser == "safari":
             context.driver = webdriver.Safari()
             logger.info("Safari browser initialized successfully")
             
         else:
-            raise ValueError(f"Unsupported browser: {config.browser}")   
+            raise ValueError(f"Unsupported browser: {browser}")   
         
-        context.driver.set_page_load_timeout(config.page_load_timeout)
+        # Set page load timeout (using constant since it's technical, not business config)
+        context.driver.set_page_load_timeout(30)
         
         logger.info("Browser setup completed successfully")
         
