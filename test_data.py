@@ -3,7 +3,7 @@ Test data mapping system for environment-specific values.
 Maps feature variables to actual values based on current environment.
 """
 
-from config import config
+from settings_manager import settings_manager
 
 class TestData:
     """
@@ -11,7 +11,7 @@ class TestData:
     """
     
     def __init__(self):
-        self.environment = config.environment
+        self.environment = settings_manager.environment
     
     def get_username(self, feature_username):
         """
@@ -25,7 +25,7 @@ class TestData:
         """
         # Map feature usernames to environment-specific usernames
         username_mapping = {
-            'testuser': config.test_username,
+            'testuser': settings_manager.get("test_username"),
             'admin': self.get_test_user_credentials('admin')['username'],
             'guest': self.get_test_user_credentials('guest')['username'],
         }
@@ -44,7 +44,7 @@ class TestData:
         """
         # Map feature passwords to environment-specific passwords
         password_mapping = {
-            'testpass': config.test_password,
+            'testpass': settings_manager.get("test_password"),
             'admin': self.get_test_user_credentials('admin')['password'],
             'guest': self.get_test_user_credentials('guest')['password'],
         }
@@ -62,10 +62,10 @@ class TestData:
             str: Environment-specific URL
         """
         # Map feature URLs to environment-specific URLs
+        base_url = settings_manager.get("base_url", "https://www.demoblaze.com")
         url_mapping = {
-            'homepage': config.base_url,
-            'login': f"{config.base_url}/login",
-            'products': f"{config.base_url}/products",
+            'homepage': base_url,
+            'login': f"{base_url}/login"
         }
         
         return url_mapping.get(feature_url, feature_url)
@@ -75,8 +75,8 @@ class TestData:
         import os
         credentials = {
             'default': {
-                'username': config.test_username,
-                'password': config.test_password
+                'username': settings_manager.get("test_username"),
+                'password': settings_manager.get("test_password")
             },
             'admin': {
                 'username': os.getenv('ADMIN_USERNAME'),
