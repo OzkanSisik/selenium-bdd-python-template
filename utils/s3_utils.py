@@ -22,24 +22,27 @@ class S3Downloader:
     - Temporary file management
     - Configurable retry logic
     - Environment-based configuration
+    
+    All configuration (bucket name, region, AWS credentials) is read from environment variables only.
     """
     
-    def __init__(self, bucket_name: Optional[str] = None, region: Optional[str] = None):
+    def __init__(self):
         """
-        Initialize S3 downloader with optional bucket and region configuration.
-        
-        Args:
-            bucket_name: S3 bucket name (can be set via S3_BUCKET_NAME env var)
-            region: AWS region (can be set via S3_REGION env var)
+        Initialize S3 downloader using only environment variables.
         """
-        self.bucket_name = bucket_name or os.getenv('S3_BUCKET_NAME')
-        self.region = region or os.getenv('S3_REGION', 'eu-central-1')
+        self.bucket_name = os.getenv('S3_BUCKET_NAME')
+        self.region = os.getenv('S3_REGION', 'eu-central-1')
+        self.aws_access_key_id = os.getenv('AWS_ACCESS_KEY_ID')
+        self.aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
         self._setup_logging()
         
         # boto3 import edildiği için S3 kullanılabilir
         
         if not self.bucket_name:
             raise ValueError("S3_BUCKET_NAME environment variable must be set")
+        
+        if not self.aws_access_key_id or not self.aws_secret_access_key:
+            raise ValueError("AWS credentials must be provided")
         
         # Initialize S3 session immediately
         self.session = self._create_s3_session()
@@ -60,7 +63,11 @@ class S3Downloader:
     def _create_s3_session(self):
         """Create S3 session with proper error handling."""
         try:
-            session = boto3.Session(region_name=self.region)
+            session = boto3.Session(
+                aws_access_key_id=self.aws_access_key_id,
+                aws_secret_access_key=self.aws_secret_access_key,
+                region_name=self.region
+            )
             # Test credentials by making a simple call
             session.client('sts').get_caller_identity()
             self.logger.info(f"S3 session established for region: {self.region}")

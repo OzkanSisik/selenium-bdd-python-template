@@ -55,6 +55,15 @@ class SettingsManager:
         """
         return os.path.dirname(os.path.abspath(__file__))
     
+    def _read_settings_from_config(self, config, env_section):
+        """Read [ALL] and environment-specific sections from configparser object."""
+        settings = {}
+        for section in ['ALL', env_section]:
+            if config.has_section(section):
+                for key, value in config.items(section):
+                    settings[key] = self._parse_value(value)
+        return settings
+    
     def _load_local_settings(self) -> Dict[str, Any]:
         """Load settings from local settings.ini file.
         
@@ -63,89 +72,35 @@ class SettingsManager:
         Returns:
             Dict[str, Any]: Settings dictionary with proper types
         """
-        settings = {}
-        
         ini_file = os.path.join(self.project_dir, "settings.ini")
         
         if not os.path.exists(ini_file):
             print(f"Warning: settings.ini not found at {ini_file}")
-            return settings
+            return {}
         
         config = configparser.ConfigParser()
         config.read(ini_file, encoding='utf-8')
         
-        if config.has_section('ALL'):
-            for key, value in config.items('ALL'):
-                settings[key] = self._parse_value(value)
-        
-        env_section = self.environment
-        if config.has_section(env_section):
-            for key, value in config.items(env_section):
-                settings[key] = self._parse_value(value)
-        
-        return settings
+        return self._read_settings_from_config(config, self.environment)
     
     def _load_remote_settings(self) -> Dict[str, Any]:
-        """Load settings from remote source (AWS S3).
-        
-        Downloads settings.ini from S3 and loads it using the same parsing logic
-        as local settings.
-        
-        Returns:
-            Dict[str, Any]: Settings dictionary loaded from S3
-        """
-        # First load local settings to get AWS credentials
-        local_settings = self._load_local_settings()
-        
-        # Get AWS credentials from local settings or environment
-        aws_access_key = os.getenv('AWS_ACCESS_KEY_ID') or local_settings.get('aws_access_key_id')
-        aws_secret_key = os.getenv('AWS_SECRET_ACCESS_KEY') or local_settings.get('aws_secret_access_key')
-        bucket_name = os.getenv('S3_BUCKET_NAME') or local_settings.get('s3_bucket_name')
-        region = os.getenv('S3_REGION') or local_settings.get('s3_region', 'eu-central-1')
-        
-        if not bucket_name:
-            print("❌ S3_BUCKET_NAME not found in environment or settings.ini")
+        """Load settings from remote source (AWS S3)."""
+        # Artık local_settings ile credential toplamaya gerek yok, S3Downloader env'den okuyor
+        if not os.getenv('S3_BUCKET_NAME'):
+            print("❌ S3_BUCKET_NAME not found in environment")
             return {}
-        
-        if not aws_access_key or not aws_secret_key:
+        if not os.getenv('AWS_ACCESS_KEY_ID') or not os.getenv('AWS_SECRET_ACCESS_KEY'):
             print("❌ AWS credentials not found. Set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY")
             return {}
-        
-        # Set environment variables for S3Downloader
-        os.environ['AWS_ACCESS_KEY_ID'] = aws_access_key
-        os.environ['AWS_SECRET_ACCESS_KEY'] = aws_secret_key
-        os.environ['S3_BUCKET_NAME'] = bucket_name
-        os.environ['S3_REGION'] = region
-        
-        # Initialize S3 downloader
         s3_downloader = S3Downloader()
-        
-        # Download settings file to temporary file
         temp_file = s3_downloader.download_file_to_temp('s3_settings.ini')
-        
         try:
-            # Load settings from temporary file
             config = configparser.ConfigParser()
             config.read(temp_file.name, encoding='utf-8')
-            
-            settings = {}
-            
-            # Load [ALL] section
-            if config.has_section('ALL'):
-                for key, value in config.items('ALL'):
-                    settings[key] = self._parse_value(value)
-            
-            # Load environment-specific section
-            env_section = self.environment
-            if config.has_section(env_section):
-                for key, value in config.items(env_section):
-                    settings[key] = self._parse_value(value)
-            
+            settings = self._read_settings_from_config(config, self.environment)
             print(f"✅ Loaded settings from S3 for environment: {self.environment}")
             return settings
-            
         finally:
-            # Clean up temporary file
             s3_downloader.cleanup_temp_file(temp_file)
             
     def _parse_value(self, value: str):
