@@ -1,5 +1,7 @@
 pipeline {
-    agent any
+    agent {
+        docker { image 'python:3.11' }
+    }
     environment {
         S3_BUCKET_NAME = 'ozkanbucket'
         S3_REGION = 'eu-central-1'
@@ -13,7 +15,8 @@ pipeline {
         }
         stage('Run S3 Integration Test') {
             steps {
-                sh '''AWS_ACCESS_KEY_ID=$AWS_CREDS_USR \
+                sh '''
+                    AWS_ACCESS_KEY_ID=$AWS_CREDS_USR \
                     AWS_SECRET_ACCESS_KEY=$AWS_CREDS_PSW \
                     S3_BUCKET_NAME=$S3_BUCKET_NAME \
                     S3_REGION=$S3_REGION \
