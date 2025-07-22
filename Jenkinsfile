@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        docker { image 'python:3.11' }
+        docker { image 'ozkansisik/otoframework-ci:latest' }
     }
     environment {
         S3_BUCKET_NAME = 'ozkanbucket'
@@ -8,11 +8,6 @@ pipeline {
         AWS_CREDS = credentials('aws-s3-credentials')
     }
     stages {
-        stage('Install dependencies') {
-            steps {
-                sh 'pip install -r requirements.txt'
-            }
-        }
         stage('Run S3 Integration Test') {
             steps {
                 sh '''
