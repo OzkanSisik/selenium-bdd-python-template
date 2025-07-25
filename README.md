@@ -134,34 +134,6 @@ behave
 ```bash
 python test_s3_integration.py
 ```
-
-### Environment-Specific Tests
-```bash
-# Test local development
-ENVIRONMENT=development python -c "from settings_manager import settings_manager; settings_manager.print_config()"
-
-# Test S3 loading
-ENVIRONMENT=staging python -c "from settings_manager import settings_manager; settings_manager.print_config()"
-```
-
-## Production Deployment
-
-### 1. Build Docker Image
-```bash
-docker build -t ozkansisik/otoframework-ci:latest .
-docker push ozkansisik/otoframework-ci:latest
-```
-
-### 2. Configure Jenkins
-- Create Jenkins credentials: `aws-s3-credentials`
-- Configure S3 bucket and region
-- Set up pipeline with GitHub integration
-
-### 3. Upload S3 Settings
-```bash
-aws s3 cp s3_settings.ini s3://your-bucket-name/s3_settings.ini
-```
-
 ## Requirements
 
 - Python 3.9+
