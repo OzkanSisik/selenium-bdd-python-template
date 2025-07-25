@@ -142,11 +142,11 @@ class SettingsManager:
             Dict[str, Any]: Complete settings dictionary
         """
         if self._settings is None:
-            if self.environment in [Environments.DEVELOPMENT, Environments.STAGING]:
+            if self.environment == Environments.DEVELOPMENT:
                 # Load from local INI file
                 self._settings = self._load_local_settings()
             else:
-                # Load from remote source (staging, production, CI)
+                # Load from remote source (staging, CI)
                 self._settings = self._load_remote_settings()
             
             # Apply environment variable overrides
