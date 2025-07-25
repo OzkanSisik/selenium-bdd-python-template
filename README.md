@@ -5,7 +5,7 @@ A Python-based test automation framework with Selenium, Behave, and AWS S3 integ
 ## Project Structure
 
 ```
-otoframework/
+selenium-bdd-framework/
 ├── Base/                    # Base page object
 ├── Pages/                   # Page object models
 ├── features/                # Behave BDD features
@@ -37,7 +37,7 @@ otoframework/
 
 ```bash
 git clone <repo-url>
-cd otoframework
+cd selenium-bdd-framework
 python -m venv venv
 source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install -r requirements.txt
