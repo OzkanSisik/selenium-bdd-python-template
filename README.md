@@ -6,7 +6,7 @@ A Python-based test automation framework with Selenium, Behave, and AWS S3 integ
 
 - **BDD Testing**: Write tests using Gherkin syntax
 - **Page Object Model**: Clean separation of test logic and UI interactions
-- **Multi-Environment Support**: Development, staging, production environments
+- **Multi-Environment Support**: Development and staging environments
 - **S3 Integration**: Remote configuration management
 - **Jenkins CI/CD**: Docker-based pipeline
 - **Security**: Credentials stored in environment variables, not in code
@@ -31,7 +31,7 @@ pip install -r requirements.txt
 ENVIRONMENT=development
 ```
 
-#### For S3 Environments (Staging/Production)
+#### For S3 Environments (Staging/CI)
 ```bash
 # Configure AWS credentials
 aws configure
@@ -62,9 +62,7 @@ The framework automatically detects the environment and loads the appropriate co
 | Environment | Source | Use Case |
 |-------------|--------|----------|
 | `development` | Local `settings.ini` | Local development |
-| `staging` | S3 `s3_settings.ini` | Staging testing |
-| `production` | S3 `s3_settings.ini` | Production testing |
-| `JENKINS` | S3 `s3_settings.ini` | CI/CD pipelines |
+| `staging` | S3 `s3_settings.ini` | Staging testing and CI/CD |
 
 ## Configuration Files
 
@@ -90,15 +88,11 @@ browser = chrome
 headless = false
 timeout = 30
 
+[development]
+base_url = https://localhost:3000
+headless = false
+
 [staging]
-base_url = https://staging.example.com
-headless = true
-
-[production]
-base_url = https://example.com
-headless = true
-
-[JENKINS]
 base_url = https://staging.example.com
 headless = true
 ```
@@ -143,5 +137,3 @@ python test_s3_integration.py
 - Jenkins (for CI/CD)
 
 ---
-
-**Built for professional test automation** 

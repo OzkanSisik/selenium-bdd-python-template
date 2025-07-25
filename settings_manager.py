@@ -11,18 +11,14 @@ from utils.s3_utils import S3Downloader
 
 class Environments:
     """Environment constants"""
-    LOCAL = "LOCAL"
     DEVELOPMENT = "development"
     STAGING = "staging"
-    PRODUCTION = "production"
-    JENKINS = "JENKINS"
-    CI = "CI"
 
 
 class SettingsManager:
     """Centralized settings management with support for:
     - Local INI files (development)
-    - Remote configurations (staging/production)
+    - Remote configurations (staging)
     - Environment variable overrides
      """
     def __init__(self):
@@ -34,7 +30,7 @@ class SettingsManager:
         """Detect current environment from ENVIRONMENT variable or CI/CD indicators.
         
         Returns:
-            str: Environment name ('development', 'staging', 'production', 'JENKINS')
+            str: Environment name ('development', 'staging')
         """
         # Check for explicit environment variable
         env = os.getenv('ENVIRONMENT')
@@ -43,7 +39,7 @@ class SettingsManager:
         
         # Check for CI/CD environment variables
         if os.getenv('CI') or os.getenv('JENKINS_URL') or os.getenv('GITHUB_ACTIONS'):
-            return Environments.JENKINS
+            return Environments.STAGING
         
         return Environments.DEVELOPMENT
     
@@ -146,7 +142,7 @@ class SettingsManager:
             Dict[str, Any]: Complete settings dictionary
         """
         if self._settings is None:
-            if self.environment in [Environments.LOCAL, Environments.DEVELOPMENT]:
+            if self.environment in [Environments.DEVELOPMENT, Environments.STAGING]:
                 # Load from local INI file
                 self._settings = self._load_local_settings()
             else:

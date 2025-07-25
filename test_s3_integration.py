@@ -13,9 +13,7 @@ def test_s3_integration():
     # Test different environments
     test_cases = [
         ('development', 'Local settings.ini'),
-        ('staging', 'S3 settings.ini'),
-        ('production', 'S3 settings.ini'),
-        ('JENKINS', 'S3 settings.ini')
+        ('staging', 'S3 settings.ini')
     ]
     
     for env, description in test_cases:
@@ -44,7 +42,7 @@ def test_s3_integration():
     print(f"   2. Set S3_REGION environment variable (optional, defaults to eu-central-1)")
     print(f"   3. Configure AWS credentials")
     print(f"   4. Upload s3_settings.ini to your S3 bucket")
-    print(f"   5. Set ENVIRONMENT=staging|production|JENKINS to use S3 settings")
+    print(f"   5. Set ENVIRONMENT=staging to use S3 settings")
 
 
 if __name__ == "__main__":
