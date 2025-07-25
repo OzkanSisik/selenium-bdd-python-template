@@ -2,6 +2,26 @@
 
 A Python-based test automation framework with Selenium, Behave, and AWS S3 integration. Designed for professional CI/CD pipelines. Easily adaptable for any web application testing needs. This is a framework template with basic test examples that demonstrates the structure and setup - you can extend it with your own comprehensive test scenarios.
 
+## Project Structure
+
+```
+otoframework/
+├── Base/                    # Base page object
+├── Pages/                   # Page object models
+├── features/                # Behave BDD features
+│   ├── steps/              # Step definitions
+│   └── environment.py      # Behave environment setup
+├── utils/                   # Framework utilities
+│   ├── s3_utils.py         # S3 integration utilities
+│   ├── settings_manager.py # Configuration management
+│   └── test_data.py        # Test data mapping
+├── test_s3_integration.py  # S3 integration tests
+├── Jenkinsfile             # CI/CD pipeline
+├── Dockerfile              # Docker image definition
+├── requirements.txt         # Python dependencies
+└── settings.ini            # Local development config
+```
+
 ## What's Included
 
 - **BDD Testing**: Write tests using Gherkin syntax
@@ -75,7 +95,7 @@ headless = false
 timeout = 30
 
 [development]
-base_url = https://localhost:3000
+base_url = https://your-application-url.com
 ```
 
 ### S3 Configuration (`s3_settings.ini`)
@@ -88,33 +108,9 @@ browser = chrome
 headless = false
 timeout = 30
 
-[development]
-base_url = https://localhost:3000
-headless = false
-
 [staging]
-base_url = https://staging.example.com
+base_url = https://your-staging-url.com
 headless = true
-```
-
-## Project Structure
-
-```
-otoframework/
-├── Base/                    # Base page object
-├── Pages/                   # Page object models
-├── features/                # Behave BDD features
-│   ├── steps/              # Step definitions
-│   └── environment.py      # Behave environment setup
-├── utils/                   # Framework utilities
-│   ├── s3_utils.py         # S3 integration utilities
-│   ├── settings_manager.py # Configuration management
-│   └── test_data.py        # Test data mapping
-├── test_s3_integration.py  # S3 integration tests
-├── Jenkinsfile             # CI/CD pipeline
-├── Dockerfile              # Docker image definition
-├── requirements.txt         # Python dependencies
-└── settings.ini            # Local development config
 ```
 
 ## Running Tests
@@ -128,6 +124,7 @@ behave
 ```bash
 python test_s3_integration.py
 ```
+
 ## Requirements
 
 - Python 3.9+
