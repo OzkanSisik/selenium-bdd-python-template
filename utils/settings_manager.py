@@ -81,7 +81,6 @@ class SettingsManager:
     
     def _load_remote_settings(self) -> Dict[str, Any]:
         """Load settings from remote source (AWS S3)."""
-        # Artık local_settings ile credential toplamaya gerek yok, S3Downloader env'den okuyor
         if not os.getenv('S3_BUCKET_NAME'):
             print("❌ S3_BUCKET_NAME not found in environment")
             return {}
@@ -94,7 +93,6 @@ class SettingsManager:
             config = configparser.ConfigParser()
             config.read(temp_file.name, encoding='utf-8')
             settings = self._read_settings_from_config(config, self.environment)
-            print(f"✅ Loaded settings from S3 for environment: {self.environment}")
             return settings
         finally:
             s3_downloader.cleanup_temp_file(temp_file)
@@ -138,18 +136,19 @@ class SettingsManager:
     def get_settings(self) -> Dict[str, Any]:
         """Get all settings for current environment with caching.
         
+        Environment behavior:
+        - development: Loads from local settings.ini file
+        - staging: Loads from remote S3 s3_settings.ini file
+        
         Returns:
             Dict[str, Any]: Complete settings dictionary
         """
         if self._settings is None:
             if self.environment == Environments.DEVELOPMENT:
-                # Load from local INI file
                 self._settings = self._load_local_settings()
             else:
-                # Load from remote source (staging, CI)
                 self._settings = self._load_remote_settings()
             
-            # Apply environment variable overrides
             self._settings = self._apply_environment_overrides(self._settings)
         
         return self._settings
@@ -166,18 +165,6 @@ class SettingsManager:
         """
         settings = self.get_settings()
         return settings.get(key, default)
-    
-    def print_config(self):
-        """Print configuration for debugging"""
-        settings = self.get_settings()
-        print("=== Settings Configuration ===")
-        print(f"Environment: {self.environment}")
-        print(f"Project Directory: {self.project_dir}")
-        print("Settings:")
-        for key, value in settings.items():
-            print(f"  {key}: {value}")
-        print("=======================")
-
 
 # Global settings instance
 settings_manager = SettingsManager() 

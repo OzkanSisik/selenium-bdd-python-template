@@ -24,14 +24,8 @@ def test_s3_integration():
         os.environ['ENVIRONMENT'] = env
         
         try:
-            # Import SettingsManager class and create new instance
-            from settings_manager import SettingsManager
-            
-            # Create new instance for this environment
+            from utils.settings_manager import SettingsManager
             settings_manager = SettingsManager()
-            
-            # Print configuration
-            settings_manager.print_config()
             
         except Exception as e:
             print(f"❌ Error testing {env}: {e}")

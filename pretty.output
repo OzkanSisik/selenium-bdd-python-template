@@ -1,66 +1,14 @@
-Using default path "./features"
-Trying base directory: /Users/ozkansisik/Python Cucumber/otoframework/features
-Feature: DemoBlaze User Authentication # features/demoblaze_au
+Feature: DemoBlaze User Authentication # features/demoblaze_authentication.feature:1
+  As a user
+  I want to log in to DemoBlaze
+  So that I can access personalized features
   Background:   # features/demoblaze_authentication.feature:6
 
   Scenario: Login with valid credentials         # features/demoblaze_authentication.feature:9
-    Given I am 
-  Scenario: Login with valid credentials         # features/demoblaze_      Traceback (most recent call last):
-        File "/opt/homebrew/lib/python3.11/site-packages/behave/model.      Traceback (most recent call last):
-        File "/opt/homebrew/lib/python3.11/site-packages/behave/model.py", line 1329, in run
-          match.run(runner.context)
-        File "/opt/homebrew/lib/python3.11/site-packages/behave/matchers.py", line 98, in run
-          self.func(context, *args, **kwargs)
-        File "features/steps/homepage_steps.py", line 9, in step_am_on_demoblaze_homepage
-          context.home_page.navigate_to_homepage()
-        File "/Users/ozkansisik/Python Cucumber/otoframework/Pages/home_page.py", line 31, in navigate_to_homepage
-          self.wait_for_page_load()
-        File "/Users/ozkansisik/Python Cucumber/otoframework/Pages/home_page.py", line 36, in wait_for_page_load
-          self.wait.until(EC.presence_of_element_located(self.HEADER))
-        File "/opt/homebrew/lib/python3.11/site-packages/selenium/webdriver/support/wait.py", line 137, in until
-          value = method(self._driver)
-                  ^^^^^^^^^^^^^^^^^^^^
-        File "/opt/homebrew/lib/python3.11/site-packages/selenium/webdriver/support/expected_conditions.py", line 110, in _predicate
-          return driver.find_element(*locator)
-                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        File "/opt/homebrew/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 898, in find_element
-          return self.execute(Command.FIND_ELEMENT, {"using": by, "value": value})["value"]
-                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        File "/opt/homebrew/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 429, in execute
-          self.error_handler.check_response(response)
-        File "/opt/homebrew/lib/python3.11/site-packages/selenium/webdriver/remote/errorhandler.py", line 232, in check_response
-          raise exception_class(message, screen, stacktrace)
-      selenium.common.exceptions.NoSuchWindowException: Message: no such window: target window already closed
-      from unknown error: web view not found
-        (Session info: chrome=138.0.7204.158)
-      Stacktrace:
-      0   chromedriver                        0x00000001052fb55c cxxbridge1$str$ptr + 2731064
-      1   chromedriver                        0x00000001052f3454 cxxbridge1$str$ptr + 2698032
-      2   chromedriver                        0x0000000104e423f8 cxxbridge1$string$len + 90664
-      3   chromedriver                        0x0000000104e1c140 chromedriver + 131392
-      4   chromedriver                        0x0000000104eb17f0 cxxbridge1$string$len + 546336
-      5   chromedriver                        0x0000000104eca638 cxxbridge1$string$len + 648296
-      6   chromedriver                        0x0000000104e7da0c cxxbridge1$string$len + 333884
-      7   chromedriver                        0x00000001052be5e0 cxxbridge1$str$ptr + 2481340
-      8   chromedriver                        0x00000001052c1848 cxxbridge1$str$ptr + 2494244
-      9   chromedriver                        0x000000010529f234 cxxbridge1$str$ptr + 2353424
-      10  chromedriver                        0x00000001052c2104 cxxbridge1$str$ptr + 2496480
-      11  chromedriver                        0x00000001052902e4 cxxbridge1$str$ptr + 2292160
-      12  chromedriver                        0x00000001052e1ff8 cxxbridge1$str$ptr + 2627284
-      13  chromedriver                        0x00000001052e2184 cxxbridge1$str$ptr + 2627680
-      14  chromedriver                        0x00000001052f3090 cxxbridge1$str$ptr + 2697068
-      15  libsystem_pthread.dylib             0x000000018b    When I click on the "Log in" link            # None
-    And I enter username "testuser"              # None    When I click on the "Log in" link            # None
-    And I enter username "testuser"              # None
-    And I enter password "testpass"              # None
-    And I click the "Log in" button              # None
-    Then I should see "Welcome testuser" message # None
+    Given I am on the DemoBlaze homepage         # features/steps/homepage_steps.py:5
+    When I click on the "Log in" link            # features/steps/navigation_steps.py:7
+    And I enter username "testuser"              # features/steps/login_steps.py:6
+    And I enter password "testpass"              # features/steps/login_steps.py:14
+    And I click the "Log in" button              # features/steps/login_steps.py:22
+    Then I should see "Welcome testuser" message # features/steps/navigation_steps.py:23
 
-
-Failing scenarios:
-  features/demoblaze_authentication.feature:9  Login with valid credentials
-
-0 features passed, 1 failed, 0 skipped
-0 scenarios passed, 1 failed, 0 skipped
-0 steps passed, 1 failed, 5 skipped, 0 undefined
-Took 0m3.513s

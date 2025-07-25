@@ -106,10 +106,10 @@ otoframework/
 ├── features/                # Behave BDD features
 │   ├── steps/              # Step definitions
 │   └── environment.py      # Behave environment setup
-├── utils/                   # Utility modules
+├── utils/                   # Framework utilities
 │   ├── s3_utils.py         # S3 integration utilities
-│   └── webdriver_utils.py  # WebDriver utilities
-├── settings_manager.py      # Configuration management
+│   ├── settings_manager.py # Configuration management
+│   └── test_data.py        # Test data mapping
 ├── test_s3_integration.py  # S3 integration tests
 ├── Jenkinsfile             # CI/CD pipeline
 ├── Dockerfile              # Docker image definition

@@ -1,5 +1,5 @@
 from behave import given, when, then
-from test_data import test_data
+from utils.test_data import test_data
 
 from Pages.navigation_page import NavigationPage
 

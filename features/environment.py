@@ -7,7 +7,7 @@ import logging
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.safari.options import Options as SafariOptions
-from settings_manager import settings_manager
+from utils.settings_manager import settings_manager
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -25,12 +25,10 @@ def before_scenario(context, scenario):
     try:
         if browser == "chrome":
             options = ChromeOptions()
-            # Get browser options from settings
             headless = settings_manager.get("headless", False)
             window_width = settings_manager.get("window_width", 1920)
             window_height = settings_manager.get("window_height", 1080)
             
-            # Build browser options
             browser_options = {
                 '--no-sandbox': True,
                 '--disable-dev-shm-usage': True,
@@ -58,9 +56,6 @@ def before_scenario(context, scenario):
             
         else:
             raise ValueError(f"Unsupported browser: {browser}")   
-        
-        # Set page load timeout (using constant since it's technical, not business config)
-        context.driver.set_page_load_timeout(30)
         
         logger.info("Browser setup completed successfully")
         

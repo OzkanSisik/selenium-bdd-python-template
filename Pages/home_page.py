@@ -4,8 +4,7 @@ from Pages.login_page import LoginPage
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import time
-from settings_manager import settings_manager
+from utils.settings_manager import settings_manager
 
 
 class HomePage(BasePage):
@@ -13,17 +12,12 @@ class HomePage(BasePage):
     Page Object for Homepage
     """
     
-    # URL - will be set from settings
-    BASE_URL = None
-    
-    # Locators
     HEADER = (By.CLASS_NAME, "navbar-brand")
 
 
     def __init__(self, driver):
         super().__init__(driver)
-        # Set BASE_URL from settings
-        self.BASE_URL = settings_manager.get("base_url", "https://www.demoblaze.com/")
+        self.BASE_URL = settings_manager.get("base_url")
 
     def navigate_to_homepage(self):
         """Navigate to DemoBlaze homepage"""
