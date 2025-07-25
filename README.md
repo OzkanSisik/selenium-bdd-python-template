@@ -103,26 +103,6 @@ base_url = https://staging.example.com
 headless = true
 ```
 
-## S3 Integration
-
-Securely downloads configuration files from AWS S3. Credentials are read only from environment variables.
-
-### Using S3
-
-```python
-from settings_manager import settings_manager
-
-# Get all settings
-settings = settings_manager.get_settings()
-
-# Get specific setting with default
-base_url = settings_manager.get('base_url', 'https://default.example.com')
-browser = settings_manager.get('browser', 'chrome')
-
-# Print configuration for debugging
-settings_manager.print_config()
-```
-
 ## Project Structure
 
 ```
