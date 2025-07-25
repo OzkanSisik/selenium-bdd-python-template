@@ -123,18 +123,6 @@ browser = settings_manager.get('browser', 'chrome')
 settings_manager.print_config()
 ```
 
-## Jenkins CI/CD
-
-### Docker Image
-
-```dockerfile
-FROM python:3.11-slim
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-COPY . .
-```
-
 ## Project Structure
 
 ```
