@@ -8,5 +8,7 @@ venv/
 .gitignore
 *.log
 screenshots/
-test_execution.log
-Jenkinsfile 
+Jenkinsfile
+README.md
+settings.ini
+s3_settings_template.ini 
