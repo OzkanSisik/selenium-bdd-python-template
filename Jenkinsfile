@@ -5,19 +5,18 @@ pipeline {
     environment {
         S3_BUCKET_NAME = 'ozkanbucket'
         S3_REGION = 'eu-central-1'
-        AWS_CREDS = credentials('aws-s3-credentials')
         ENVIRONMENT = 'staging' 
     }
     stages {
         stage('Run S3 Integration Test') {
             steps {
-                sh '''
-                    AWS_ACCESS_KEY_ID=$AWS_CREDS_USR \
-                    AWS_SECRET_ACCESS_KEY=$AWS_CREDS_PSW \
-                    S3_BUCKET_NAME=$S3_BUCKET_NAME \
-                    S3_REGION=$S3_REGION \
-                    python3 test_s3_integration.py
-                '''
+                withCredentials([usernamePassword(credentialsId: 'aws-s3-credentials', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                    sh '''
+                        S3_BUCKET_NAME=$S3_BUCKET_NAME \
+                        S3_REGION=$S3_REGION \
+                        python3 test_s3_integration.py
+                    '''
+                }
             }
         }
     }
