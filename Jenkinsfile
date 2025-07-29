@@ -6,6 +6,7 @@ pipeline {
         S3_BUCKET_NAME = 'ozkanbucket'
         S3_REGION = 'eu-central-1'
         AWS_CREDS = credentials('aws-s3-credentials')
+        ENVIRONMENT = 'staging'  # Environment variable
     }
     stages {
         stage('Run S3 Integration Test') {
@@ -15,7 +16,6 @@ pipeline {
                     AWS_SECRET_ACCESS_KEY=$AWS_CREDS_PSW \
                     S3_BUCKET_NAME=$S3_BUCKET_NAME \
                     S3_REGION=$S3_REGION \
-                    ENVIRONMENT=staging \
                     python3 test_s3_integration.py
                 '''
             }
