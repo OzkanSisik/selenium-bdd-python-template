@@ -6,7 +6,7 @@ pipeline {
         S3_BUCKET_NAME = 'ozkanbucket'
         S3_REGION = 'eu-central-1'
         AWS_CREDS = credentials('aws-s3-credentials')
-        ENVIRONMENT = 'staging'  # Environment variable
+        ENVIRONMENT = 'staging' 
     }
     stages {
         stage('Run S3 Integration Test') {
