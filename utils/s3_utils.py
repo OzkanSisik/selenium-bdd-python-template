@@ -36,15 +36,12 @@ class S3Downloader:
         self.aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
         self._setup_logging()
         
-        # boto3 import edildiği için S3 kullanılabilir
-        
         if not self.bucket_name:
             raise ValueError("S3_BUCKET_NAME environment variable must be set")
         
         if not self.aws_access_key_id or not self.aws_secret_access_key:
             raise ValueError("AWS credentials must be provided")
         
-        # Initialize S3 session immediately
         self.session = self._create_s3_session()
         self.s3_client = self.session.client('s3')
         self.s3_resource = self.session.resource('s3')

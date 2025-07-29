@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 def before_scenario(context, scenario):
     """
-    Set up browser before each scenario.
+    Sets up browser before each scenario.
     This runs before every test scenario in behave.
     """
     browser = settings_manager.get("browser", "chrome")

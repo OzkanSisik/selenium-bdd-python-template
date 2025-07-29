@@ -23,11 +23,8 @@ def step_click_signup_link(context):
 @then('I should see "Welcome {username}" message')
 def step_check_welcome_message_with_username(context, username):
     """Verify that the welcome message matches the expected text"""
-
-    # Map the username from feature file to environment-specific username
     mapped_username = test_data.get_username(username)
-    expected_message = f"Welcome {mapped_username}"
-    
+    expected_message = f"Welcome {mapped_username}" 
     welcome_text = context.navigation.get_welcome_message_text()
     assert expected_message == welcome_text, f"Expected '{expected_message}' but found '{welcome_text}'"
     

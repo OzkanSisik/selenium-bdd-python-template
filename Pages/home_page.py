@@ -29,7 +29,6 @@ class HomePage(BasePage):
         """Waits for the page to fully load"""
         self.wait.until(EC.presence_of_element_located(self.HEADER))
     
-    
     def is_on_homepage(self):
         """Check if currently on homepage"""
         return self.driver.current_url == self.BASE_URL

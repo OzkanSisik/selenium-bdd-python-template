@@ -75,8 +75,7 @@ class SettingsManager:
             return {}
         
         config = configparser.ConfigParser()
-        config.read(ini_file, encoding='utf-8')
-        
+        config.read(ini_file, encoding='utf-8')        
         return self._read_settings_from_config(config, self.environment)
     
     def _load_remote_settings(self) -> Dict[str, Any]:
@@ -166,5 +165,4 @@ class SettingsManager:
         settings = self.get_settings()
         return settings.get(key, default)
 
-# Global settings instance
 settings_manager = SettingsManager() 

@@ -2,7 +2,6 @@ from Base.base_page import BasePage
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import time
 
 
 class LoginPage(BasePage):
@@ -18,7 +17,6 @@ class LoginPage(BasePage):
     
     def enter_username(self, username):
         """Enters username in authentication form"""
-
         self.wait_for_element_visible(self.LOGIN_USERNAME_FIELD).clear().send_keys(username)
     
     def enter_password(self, password):
@@ -34,4 +32,3 @@ class LoginPage(BasePage):
         self.enter_username(username)
         self.enter_password(password)
         self.click_login_button()
-
