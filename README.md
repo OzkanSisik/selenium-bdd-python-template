@@ -18,8 +18,9 @@ selenium-bdd-framework/
 ├── test_s3_integration.py  # S3 integration tests
 ├── Jenkinsfile             # CI/CD pipeline
 ├── Dockerfile              # Docker image definition
-├── requirements.txt         # Python dependencies
-└── settings.ini            # Local development config
+├── requirements.txt        # Python dependencies
+├── settings.ini            # Local development config
+└── s3_settings_template.ini # S3 config template for staging/CI
 ```
 
 ## What's Included
@@ -62,18 +63,19 @@ export S3_REGION=eu-central-1
 export ENVIRONMENT=staging
 ```
 
-### 3. Run Tests
+## Jenkins & Security
 
-```bash
-# All tests
-behave
+For AWS access in the Jenkins pipeline, I use a single "username with password" credential. The Access Key ID is stored as the username, and the Secret Access Key as the password. In the pipeline, I connect this credential using a withCredentials block, which automatically sets the right environment variables for my scripts. This approach is both practical and secure—Jenkins masks these values in logs and only makes them available while the pipeline is running.
 
-# Specific feature
-behave features/demoblaze_authentication.feature
+Example usage:
 
-# With specific environment
-ENVIRONMENT=staging behave
+```groovy
+withCredentials([usernamePassword(credentialsId: 'aws-s3-credentials', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+    sh 'python3 test_s3_integration.py'
+}
 ```
+
+In short, I never store sensitive information like keys or secrets directly in code or config files. All credentials are managed securely in the Jenkins credentials store.
 
 ## How It Works
 
@@ -100,7 +102,7 @@ base_url = https://your-application-url.com
 
 ### S3 Configuration (`s3_settings.ini`)
 
-Upload this file to your S3 bucket:
+Upload this file to your S3 bucket (no [development] section needed):
 
 ```ini
 [ALL]
