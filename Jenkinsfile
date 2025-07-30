@@ -8,13 +8,13 @@ pipeline {
         ENVIRONMENT = 'staging' 
     }
     stages {
-        stage('Run S3 Integration Test') {
+        stage('Run Demoblaze Authentication Test') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'aws-s3-credentials', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                     sh '''
                         S3_BUCKET_NAME=$S3_BUCKET_NAME \
                         S3_REGION=$S3_REGION \
-                        python3 test_s3_integration.py
+                        behave features/demoblaze_authentication.feature
                     '''
                 }
             }
