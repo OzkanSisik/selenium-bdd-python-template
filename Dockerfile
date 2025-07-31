@@ -1,4 +1,4 @@
-# Selenium test image with Python, Chrome, and ChromeDriver (best practice)
+# Selenium test image with Python and Google Chrome (Selenium Manager will handle ChromeDriver)
 FROM python:3.11-slim
 
 # Install system dependencies and essential packages
@@ -17,24 +17,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libdrm2 \
     && rm -rf /var/lib/apt/lists/*
 
-# Add Google Chrome's official signing key and repository (using signed-by)
-RUN curl -fsSL https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/google-linux-signing-keyring.gpg && \
-    echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-linux-signing-keyring.gpg] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list
+# Download and install Google Chrome from S3 bucket
+RUN curl -fsSL -o /tmp/chrome.deb "https://ozkanbucket.s3.eu-central-1.amazonaws.com/google-chrome-stable_current_amd64.deb" && \
+    apt-get update && apt-get install -y --no-install-recommends /tmp/chrome.deb && \
+    rm /tmp/chrome.deb && rm -rf /var/lib/apt/lists/*
 
-# Install Google Chrome
-RUN apt-get update && apt-get install -y --no-install-recommends google-chrome-stable && rm -rf /var/lib/apt/lists/*
-
-# Install ChromeDriver (try major version, fallback to latest)
-RUN set -eux; \
-    CHROME_VERSION=$(google-chrome --version | grep -Eo '[0-9]+' | head -1); \
-    CHROMEDRIVER_VERSION=$(curl -fsSL --retry 3 --retry-connrefused "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION}" || curl -fsSL "https://chromedriver.storage.googleapis.com/LATEST_RELEASE") && \
-    curl -fsSL "https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip" -o /tmp/chromedriver.zip && \
-    unzip /tmp/chromedriver.zip -d /usr/local/bin/ && \
-    rm /tmp/chromedriver.zip && \
-    chmod +x /usr/local/bin/chromedriver
-
-# Print Chrome and ChromeDriver versions for debug
-RUN google-chrome --version && chromedriver --version
+# Print Chrome version for debug
+RUN google-chrome --version
 
 WORKDIR /app
 COPY requirements.txt .
