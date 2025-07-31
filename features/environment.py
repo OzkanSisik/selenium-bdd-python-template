@@ -4,6 +4,8 @@ This file handles the lifecycle of the WebDriver instance for behave tests.
 """
 
 import logging
+import os
+import shutil
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.safari.options import Options as SafariOptions
@@ -11,6 +13,7 @@ from utils.settings_manager import settings_manager
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
 
 
 def before_scenario(context, scenario):
@@ -35,7 +38,8 @@ def before_scenario(context, scenario):
                 '--disable-gpu': True,
                 '--window-size': f'{window_width},{window_height}',
                 '--disable-extensions': True,
-                '--disable-plugins': True
+                '--disable-plugins': True,
+                '--user-data-dir': f'/tmp/chrome-user-data-{os.getpid()}'
             }
             
             if headless:
@@ -74,4 +78,13 @@ def after_scenario(context, scenario):
             context.driver.quit()
             logger.info(f"Browser closed successfully after scenario: {scenario.name}")
         except Exception as e:
-            logger.warning(f"Error closing browser: {str(e)}") 
+            logger.warning(f"Error closing browser: {str(e)}")
+    
+    # Clean up Chrome user data directory to prevent conflicts
+    try:
+        chrome_user_data_dir = f'/tmp/chrome-user-data-{os.getpid()}'
+        if os.path.exists(chrome_user_data_dir):
+            shutil.rmtree(chrome_user_data_dir)
+            logger.info("Chrome user data directory cleaned up successfully")
+    except Exception as e:
+        logger.warning(f"Error cleaning up Chrome user data directory: {str(e)}") 
