@@ -12,6 +12,9 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'aws-s3-credentials', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                     sh '''
+                        # Clean up any existing Chrome processes
+                        pkill -f chrome || true
+                        
                         S3_BUCKET_NAME=$S3_BUCKET_NAME \
                         S3_REGION=$S3_REGION \
                         behave features/demoblaze_authentication.feature

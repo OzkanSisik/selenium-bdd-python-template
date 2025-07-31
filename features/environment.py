@@ -38,8 +38,7 @@ def before_scenario(context, scenario):
                 '--disable-gpu': True,
                 '--window-size': f'{window_width},{window_height}',
                 '--disable-extensions': True,
-                '--disable-plugins': True,
-                '--user-data-dir': f'/tmp/chrome-user-data-{os.getpid()}'
+                '--disable-plugins': True
             }
             
             if headless:
@@ -80,11 +79,4 @@ def after_scenario(context, scenario):
         except Exception as e:
             logger.warning(f"Error closing browser: {str(e)}")
     
-    # Clean up Chrome user data directory to prevent conflicts
-    try:
-        chrome_user_data_dir = f'/tmp/chrome-user-data-{os.getpid()}'
-        if os.path.exists(chrome_user_data_dir):
-            shutil.rmtree(chrome_user_data_dir)
-            logger.info("Chrome user data directory cleaned up successfully")
-    except Exception as e:
-        logger.warning(f"Error cleaning up Chrome user data directory: {str(e)}") 
+ 
