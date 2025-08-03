@@ -9,6 +9,8 @@ from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.safari.options import Options as SafariOptions
 from utils.settings_manager import settings_manager
 from selenium.webdriver.chrome.service import Service as ChromeService
+import shutil
+import tempfile
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -49,6 +51,10 @@ def before_scenario(context, scenario):
                 else:
                     options.add_argument(f"{option}={value}")
             
+            user_data_dir = tempfile.mkdtemp()
+            options.add_argument(f'--user-data-dir={user_data_dir}')
+            context._chrome_user_data_dir = user_data_dir
+            
             service = ChromeService('/usr/local/bin/chromedriver')
             context.driver = webdriver.Chrome(service=service, options=options)
             logger.info("Chrome browser initialized successfully with custom ChromeDriver")
@@ -78,4 +84,10 @@ def after_scenario(context, scenario):
             logger.info(f"Browser closed successfully after scenario: {scenario.name}")
         except Exception as e:
             logger.warning(f"Error closing browser: {str(e)}")
+    # User data directory'yi temizle
+    if hasattr(context, '_chrome_user_data_dir'):
+        try:
+            shutil.rmtree(context._chrome_user_data_dir)
+        except Exception as e:
+            logger.warning(f"User data directory silinemedi: {e}")
     
