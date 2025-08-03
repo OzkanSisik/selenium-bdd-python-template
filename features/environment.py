@@ -52,6 +52,7 @@ def before_scenario(context, scenario):
                     options.add_argument(f"{option}={value}")
             
             user_data_dir = tempfile.mkdtemp()
+            logger.info(f"Using user data dir: {user_data_dir}")
             options.add_argument(f'--user-data-dir={user_data_dir}')
             context._chrome_user_data_dir = user_data_dir
             
@@ -84,7 +85,7 @@ def after_scenario(context, scenario):
             logger.info(f"Browser closed successfully after scenario: {scenario.name}")
         except Exception as e:
             logger.warning(f"Error closing browser: {str(e)}")
-    # User data directory'yi temizle
+    # Clear user data directory
     if hasattr(context, '_chrome_user_data_dir'):
         try:
             shutil.rmtree(context._chrome_user_data_dir)
