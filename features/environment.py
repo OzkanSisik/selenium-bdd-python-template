@@ -4,12 +4,11 @@ This file handles the lifecycle of the WebDriver instance for behave tests.
 """
 
 import logging
-import os
-import shutil
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.safari.options import Options as SafariOptions
 from utils.settings_manager import settings_manager
+from selenium.webdriver.chrome.service import Service as ChromeService
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -50,8 +49,9 @@ def before_scenario(context, scenario):
                 else:
                     options.add_argument(f"{option}={value}")
             
-            context.driver = webdriver.Chrome(options=options)
-            logger.info("Chrome browser initialized successfully with Selenium Manager")
+            service = ChromeService('/usr/local/bin/chromedriver')
+            context.driver = webdriver.Chrome(service=service, options=options)
+            logger.info("Chrome browser initialized successfully with custom ChromeDriver")
             
         elif browser == "safari":
             context.driver = webdriver.Safari()
@@ -79,4 +79,3 @@ def after_scenario(context, scenario):
         except Exception as e:
             logger.warning(f"Error closing browser: {str(e)}")
     
- 
