@@ -31,6 +31,8 @@ RUN curl -fsSL -o /tmp/chromedriver.zip "https://ozkanbucket.s3.eu-central-1.ama
     chmod +x /usr/local/bin/chromedriver && \
     rm /tmp/chromedriver.zip
 
+RUN echo "unzip-j kullanildi - 2024-08-04" > /usr/local/bin/BUILD_MARKER
+
 RUN ls -l /usr/local/bin/
 
 WORKDIR /app
