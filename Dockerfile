@@ -27,10 +27,11 @@ RUN google-chrome --version
 
 # Download and install ChromeDriver from S3
 RUN curl -fsSL -o /tmp/chromedriver.zip "https://ozkanbucket.s3.eu-central-1.amazonaws.com/chromedriver-linux64.zip" && \
-    unzip /tmp/chromedriver.zip -d /usr/local/bin/ && \
-    mv /usr/local/bin/chromedriver-linux64/chromedriver /usr/local/bin/chromedriver && \
+    unzip -j /tmp/chromedriver.zip 'chromedriver-linux64/chromedriver' -d /usr/local/bin/ && \
     chmod +x /usr/local/bin/chromedriver && \
-    rm -rf /usr/local/bin/chromedriver-linux64 /tmp/chromedriver.zip
+    rm /tmp/chromedriver.zip
+
+RUN ls -l /usr/local/bin/
 
 WORKDIR /app
 COPY requirements.txt .
