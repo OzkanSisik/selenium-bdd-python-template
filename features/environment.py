@@ -55,7 +55,7 @@ def before_scenario(context, scenario):
             user_data_dir = tempfile.mkdtemp(dir="/var/tmp")
             logger.info(f"Using user data dir: {user_data_dir}")
             logger.info(f"User data dir exists: {os.path.exists(user_data_dir)}, is dir: {os.path.isdir(user_data_dir)}, contents: {os.listdir(user_data_dir)}")
-            options.add_argument(f'--user-data-dir={user_data_dir}')
+            # options.add_argument(f'--user-data-dir={user_data_dir}')  # Geçici olarak kaldırıldı
             options.add_argument('--enable-logging')
             options.add_argument('--v=1')
             context._chrome_user_data_dir = user_data_dir
