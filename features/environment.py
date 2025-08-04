@@ -12,7 +12,7 @@ from selenium.webdriver.chrome.service import Service as ChromeService
 import shutil
 import tempfile
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 
@@ -54,9 +54,14 @@ def before_scenario(context, scenario):
             user_data_dir = tempfile.mkdtemp()
             logger.info(f"Using user data dir: {user_data_dir}")
             options.add_argument(f'--user-data-dir={user_data_dir}')
+            options.add_argument('--enable-logging')
+            options.add_argument('--v=1')
             context._chrome_user_data_dir = user_data_dir
-            
-            service = ChromeService('/usr/local/bin/chromedriver')
+            service = ChromeService(
+                executable_path='/usr/local/bin/chromedriver',
+                log_path='chromedriver.log'
+            )
+            service.log_level = "ALL"
             context.driver = webdriver.Chrome(service=service, options=options)
             logger.info("Chrome browser initialized successfully with custom ChromeDriver")
             
