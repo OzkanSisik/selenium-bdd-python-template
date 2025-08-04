@@ -6,7 +6,7 @@ pipeline {
         S3_BUCKET_NAME = 'ozkanbucket'
         S3_REGION = 'eu-central-1'
         ENVIRONMENT = 'staging'
-        HOME = '/var/jenkins_home'
+        HOME = '/tmp'
     }
     stages {
         stage('Show user info') {
