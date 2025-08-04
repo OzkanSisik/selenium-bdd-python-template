@@ -35,8 +35,6 @@ def before_scenario(context, scenario):
             window_height = settings_manager.get("window_height", 1080)
             
             user_data_dir = tempfile.mkdtemp(dir="/var/tmp")
-            logger.info(f"Using user data dir: {user_data_dir}")
-            logger.info(f"User data dir exists: {os.path.exists(user_data_dir)}, is dir: {os.path.isdir(user_data_dir)}, contents: {os.listdir(user_data_dir)}")
             options.add_argument(f'--user-data-dir={user_data_dir}')
             if headless:
                 options.add_argument('--headless')
@@ -47,12 +45,20 @@ def before_scenario(context, scenario):
             options.add_argument('--disable-extensions')
             options.add_argument('--disable-plugins')
             context._chrome_user_data_dir = user_data_dir
-            service = ChromeService(
-                executable_path='/usr/local/bin/chromedriver',
-                log_path='chromedriver.log'
-            )
-            context.driver = webdriver.Chrome(service=service, options=options)
-            logger.info("Chrome browser initialized successfully with custom ChromeDriver")
+            
+            # Use Selenium Manager for development, fixed ChromeDriver for staging/AWS
+            if settings_manager.environment == Environments.DEVELOPMENT:
+                # Use Selenium Manager (default behavior)
+                context.driver = webdriver.Chrome(options=options)
+                logger.info("Chrome browser initialized successfully with Selenium Manager")
+            else:
+                # Use fixed ChromeDriver for AWS/staging environments
+                service = ChromeService(
+                    executable_path='/usr/local/bin/chromedriver',
+                    log_path='chromedriver.log'
+                )
+                context.driver = webdriver.Chrome(service=service, options=options)
+                logger.info("Chrome browser initialized successfully with custom ChromeDriver")
             
         elif browser == "safari":
             context.driver = webdriver.Safari()
