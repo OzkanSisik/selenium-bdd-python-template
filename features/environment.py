@@ -7,10 +7,15 @@ import logging
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.safari.options import Options as SafariOptions
-from utils.settings_manager import settings_manager
+from utils.settings_manager import settings_manager, Environments
+from selenium.webdriver.chrome.service import Service as ChromeService
+import shutil
+import tempfile
+import os
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
+
 
 
 def before_scenario(context, scenario):
@@ -29,26 +34,31 @@ def before_scenario(context, scenario):
             window_width = settings_manager.get("window_width", 1920)
             window_height = settings_manager.get("window_height", 1080)
             
-            browser_options = {
-                '--no-sandbox': True,
-                '--disable-dev-shm-usage': True,
-                '--disable-gpu': True,
-                '--window-size': f'{window_width},{window_height}',
-                '--disable-extensions': True,
-                '--disable-plugins': True
-            }
-            
+            user_data_dir = tempfile.mkdtemp(dir="/var/tmp")
+            options.add_argument(f'--user-data-dir={user_data_dir}')
             if headless:
-                browser_options['--headless'] = True
+                options.add_argument('--headless')
+            options.add_argument('--no-sandbox')
+            options.add_argument('--disable-dev-shm-usage')
+            options.add_argument('--disable-gpu')
+            options.add_argument(f'--window-size={window_width},{window_height}')
+            options.add_argument('--disable-extensions')
+            options.add_argument('--disable-plugins')
+            context._chrome_user_data_dir = user_data_dir
             
-            for option, value in browser_options.items():
-                if value is True:
-                    options.add_argument(option)
-                else:
-                    options.add_argument(f"{option}={value}")
-            
-            context.driver = webdriver.Chrome(options=options)
-            logger.info("Chrome browser initialized successfully with Selenium Manager")
+            # Use Selenium Manager for development, fixed ChromeDriver for staging/AWS
+            if settings_manager.environment == Environments.DEVELOPMENT:
+                # Use Selenium Manager (default behavior)
+                context.driver = webdriver.Chrome(options=options)
+                logger.info("Chrome browser initialized successfully with Selenium Manager")
+            else:
+                # Use fixed ChromeDriver for AWS/staging environments
+                service = ChromeService(
+                    executable_path='/usr/local/bin/chromedriver',
+                    log_path='chromedriver.log'
+                )
+                context.driver = webdriver.Chrome(service=service, options=options)
+                logger.info("Chrome browser initialized successfully with custom ChromeDriver")
             
         elif browser == "safari":
             context.driver = webdriver.Safari()
@@ -74,4 +84,11 @@ def after_scenario(context, scenario):
             context.driver.quit()
             logger.info(f"Browser closed successfully after scenario: {scenario.name}")
         except Exception as e:
-            logger.warning(f"Error closing browser: {str(e)}") 
+            logger.warning(f"Error closing browser: {str(e)}")
+    # Clear user data directory
+    if hasattr(context, '_chrome_user_data_dir'):
+        try:
+            shutil.rmtree(context._chrome_user_data_dir)
+        except Exception as e:
+            logger.warning(f"User data directory silinemedi: {e}")
+    

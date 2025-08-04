@@ -3,6 +3,7 @@ Settings Manager for Test Automation Framework
 Supports both local INI files and remote configurations (AWS/CI)
 """
 import configparser
+import logging
 import os
 from pathlib import Path
 from typing import Dict, Any, Optional
@@ -27,19 +28,14 @@ class SettingsManager:
         self.project_dir = self._get_project_dir()
         
     def _detect_environment(self) -> str:
-        """Detect current environment from ENVIRONMENT variable or CI/CD indicators.
+        """Detect current environment from ENVIRONMENT variable.
         
         Returns:
             str: Environment name ('development', 'staging')
         """
-        # Check for explicit environment variable
         env = os.getenv('ENVIRONMENT')
         if env:
             return env.lower()
-        
-        # Check for CI/CD environment variables
-        if os.getenv('CI') or os.getenv('JENKINS_URL') or os.getenv('GITHUB_ACTIONS'):
-            return Environments.STAGING
         
         return Environments.DEVELOPMENT
     
@@ -71,7 +67,7 @@ class SettingsManager:
         ini_file = os.path.join(self.project_dir, "settings.ini")
         
         if not os.path.exists(ini_file):
-            print(f"Warning: settings.ini not found at {ini_file}")
+            logging.warning(f"settings.ini not found at {ini_file}")
             return {}
         
         config = configparser.ConfigParser()
@@ -81,10 +77,10 @@ class SettingsManager:
     def _load_remote_settings(self) -> Dict[str, Any]:
         """Load settings from remote source (AWS S3)."""
         if not os.getenv('S3_BUCKET_NAME'):
-            print("❌ S3_BUCKET_NAME not found in environment")
+            logging.error("S3_BUCKET_NAME not found in environment")
             return {}
         if not os.getenv('AWS_ACCESS_KEY_ID') or not os.getenv('AWS_SECRET_ACCESS_KEY'):
-            print("❌ AWS credentials not found. Set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY")
+            logging.error("AWS credentials not found. Set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY")
             return {}
         s3_downloader = S3Downloader()
         temp_file = s3_downloader.download_file_to_temp('s3_settings.ini')
@@ -164,5 +160,5 @@ class SettingsManager:
         """
         settings = self.get_settings()
         return settings.get(key, default)
-
+    
 settings_manager = SettingsManager() 

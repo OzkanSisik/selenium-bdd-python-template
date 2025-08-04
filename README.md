@@ -1,6 +1,6 @@
 # Selenium BDD Framework
 
-A Python-based test automation framework with Selenium, Behave, and AWS S3 integration. Designed for professional CI/CD pipelines. Easily adaptable for any web application testing needs. This is a framework template with basic test examples that demonstrates the structure and setup - you can extend it with your own comprehensive test scenarios.
+A Python-based test automation framework with Selenium, Behave, and AWS S3 integration. Designed for professional CI/CD pipelines with Docker containerization. Easily adaptable for any web application testing needs. This is a framework template with basic test examples that demonstrates the structure and setup - you can extend it with your own comprehensive test scenarios.
 
 ## Project Structure
 
@@ -18,8 +18,9 @@ selenium-bdd-framework/
 ├── test_s3_integration.py  # S3 integration tests
 ├── Jenkinsfile             # CI/CD pipeline
 ├── Dockerfile              # Docker image definition
-├── requirements.txt         # Python dependencies
-└── settings.ini            # Local development config
+├── requirements.txt        # Python dependencies
+├── settings.ini            # Local development config
+└── s3_settings_template.ini # S3 config template for staging/CI
 ```
 
 ## What's Included
@@ -28,12 +29,31 @@ selenium-bdd-framework/
 - **Page Object Model**: Clean separation of test logic and UI interactions
 - **Multi-Environment Support**: Development and staging environments
 - **S3 Integration**: Remote configuration management
-- **Jenkins CI/CD**: Docker-based pipeline
+- **Jenkins CI/CD**: Docker-based pipeline with AWS EC2
+- **Docker Containerization**: Isolated test environment
+- **Smart Driver Management**: Automatic driver detection for development, fixed driver for CI/CD
 - **Security**: Credentials stored in environment variables, not in code
+
+## Key Features
+
+### 🐳 **Docker Containerization**
+- Isolated test environment with Chrome and ChromeDriver pre-installed
+- Consistent execution across different environments
+- Resource management and cleanup
+
+### 🔧 **Smart Driver Management**
+- **Development Environment**: Automatic ChromeDriver detection and download
+- **CI/CD Environment**: Fixed ChromeDriver version from S3 for stability
+- Environment-aware configuration
+
+### ☁️ **AWS Integration**
+- S3-based configuration management
+- EC2-hosted Jenkins with Docker
+- Secure credential management
 
 ## Setup
 
-### 1. Get Started
+### Get Started
 
 ```bash
 git clone <repo-url>
@@ -43,46 +63,59 @@ source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### 2. Environment Configuration
 
-#### For Local Development
-```bash
-# Uses local settings.ini file
-ENVIRONMENT=development
-```
 
-#### For S3 Environments (Staging/CI)
-```bash
-# Configure AWS credentials
-aws configure
+## Docker Setup
 
-# Set environment variables
-export S3_BUCKET_NAME=your-bucket-name
-export S3_REGION=eu-central-1
-export ENVIRONMENT=staging
-```
+### Building the Docker Image
 
-### 3. Run Tests
+**Important**: For AWS deployment, build the image on Linux or use multi-platform build to ensure compatibility.
 
 ```bash
-# All tests
-behave
+# Standard build
+docker build -t selenium-bdd-framework .
 
-# Specific feature
-behave features/demoblaze_authentication.feature
-
-# With specific environment
-ENVIRONMENT=staging behave
+# Multi-platform build (recommended for AWS)
+docker buildx build --platform linux/amd64 -t selenium-bdd-framework .
 ```
+
+### Docker Image Features
+- **Chrome Browser**: Pre-installed Google Chrome
+- **ChromeDriver**: Fixed version from S3 for CI/CD stability
+- **Python Environment**: All dependencies pre-installed
+- **Jenkins User**: Proper user permissions (UID 1000)
+- **Resource Management**: Optimized for CI/CD execution
+
+## Jenkins & AWS Setup
+
+### AWS EC2 Requirements
+- **Instance Type**: t3.medium or higher (minimum 2GB RAM)
+- **Docker**: Pre-installed on EC2
+- **Security Groups**: Allow Jenkins port (8080) and SSH (22)
+
+### Jenkins Pipeline Features
+- **Docker Container**: Runs tests in isolated environment
+- **S3 Integration**: Downloads configuration from S3
+- **Credential Management**: Secure AWS credentials handling
+- **Resource Cleanup**: Automatic container cleanup after tests
+
+### Jenkins Credentials Setup
+For AWS access in the Jenkins pipeline, use a "username with password" credential:
+- **Username**: AWS Access Key ID
+- **Password**: AWS Secret Access Key
+
+
 
 ## How It Works
 
 The framework automatically detects the environment and loads the appropriate configuration:
 
-| Environment | Source | Use Case |
-|-------------|--------|----------|
-| `development` | Local `settings.ini` | Local development |
-| `staging` | S3 `s3_settings.ini` | Staging testing and CI/CD |
+| Environment | Source | Driver Management | Use Case |
+|-------------|--------|-------------------|----------|
+| `development` | Local `settings.ini` | Automatic (Selenium Manager) | Local development |
+| `staging` | S3 `s3_settings.ini` | Fixed ChromeDriver from S3 | Staging testing and CI/CD |
+
+
 
 ## Configuration Files
 
@@ -100,7 +133,7 @@ base_url = https://your-application-url.com
 
 ### S3 Configuration (`s3_settings.ini`)
 
-Upload this file to your S3 bucket:
+Upload this file to your S3 bucket (no [development] section needed):
 
 ```ini
 [ALL]
@@ -115,14 +148,23 @@ headless = true
 
 ## Running Tests
 
-### All Tests
+### Local Development
 ```bash
+# All tests
 behave
-```
 
-### S3 Integration Test
+# Specific feature
+behave features/demoblaze_authentication.feature
+
+
+
+### Docker Environment
 ```bash
-python test_s3_integration.py
+# Run tests in Docker
+docker run --rm selenium-bdd-framework behave
+
+# Run specific feature in Docker
+docker run --rm selenium-bdd-framework behave features/demoblaze_authentication.feature
 ```
 
 ## Requirements
@@ -132,5 +174,14 @@ python test_s3_integration.py
 - AWS CLI (for S3 environments)
 - Docker (for CI/CD)
 - Jenkins (for CI/CD)
+
+
+## Security Notes
+
+- Never store sensitive information in code or config files
+- All credentials are managed securely in Jenkins credentials store
+- Docker containers are isolated and cleaned up after execution
+- S3 bucket policies should be properly configured for access control
+
 
 ---

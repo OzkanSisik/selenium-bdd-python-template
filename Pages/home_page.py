@@ -5,6 +5,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from utils.settings_manager import settings_manager
+import time
 
 
 class HomePage(BasePage):
@@ -12,7 +13,7 @@ class HomePage(BasePage):
     Page Object for Homepage
     """
     
-    HEADER = (By.CLASS_NAME, "navbar-brand")
+    HEADER = (By.CSS_SELECTOR, ".navbar-brand")
 
 
     def __init__(self, driver):
@@ -22,12 +23,13 @@ class HomePage(BasePage):
     def navigate_to_homepage(self):
         """Navigate to DemoBlaze homepage"""
         self.driver.get(self.BASE_URL)
+        time.sleep(6)
         self.wait_for_page_load()
         return HomePage(self.driver)
 
     def wait_for_page_load(self):
         """Waits for the page to fully load"""
-        self.wait.until(EC.presence_of_element_located(self.HEADER))
+        self.wait_for_element_visible(self.HEADER)
     
     def is_on_homepage(self):
         """Check if currently on homepage"""
