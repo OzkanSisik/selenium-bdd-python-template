@@ -35,16 +35,16 @@ RUN echo "unzip-j kullanildi - 2024-08-04" > /usr/local/bin/BUILD_MARKER
 
 RUN ls -l /usr/local/bin/
 
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY . .
+
 # Create jenkins user with UID 1000 and set up home directory
 RUN useradd -m -u 1000 jenkins
 # Ensure jenkins owns its home and .local directories
 RUN mkdir -p /home/jenkins/.local/share/applications && chown -R jenkins:jenkins /home/jenkins && chmod -R 700 /home/jenkins/.local
 # Switch to jenkins user
 USER jenkins
-
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-COPY . .
 
 # --- END OF DOCKERFILE --- 
