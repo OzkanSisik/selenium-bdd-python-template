@@ -34,39 +34,23 @@ def before_scenario(context, scenario):
             window_width = settings_manager.get("window_width", 1920)
             window_height = settings_manager.get("window_height", 1080)
             
-            browser_options = {
-                '--no-sandbox': True,
-                '--disable-dev-shm-usage': True,
-                '--disable-gpu': True,
-                '--window-size': f'{window_width},{window_height}',
-                '--disable-extensions': True,
-                '--disable-plugins': True
-            }
-            
-            if headless:
-                browser_options['--headless'] = True
-            
-            for option, value in browser_options.items():
-                if value is True:
-                    options.add_argument(option)
-                else:
-                    options.add_argument(f"{option}={value}")
-            
             user_data_dir = tempfile.mkdtemp(dir="/var/tmp")
             logger.info(f"Using user data dir: {user_data_dir}")
             logger.info(f"User data dir exists: {os.path.exists(user_data_dir)}, is dir: {os.path.isdir(user_data_dir)}, contents: {os.listdir(user_data_dir)}")
             options.add_argument(f'--user-data-dir={user_data_dir}')
-            options.add_argument('--log-level=0')
-            options.add_argument('--enable-logging')
-            options.add_argument('--v=1')
-            logger.info(f"Chrome options: {options.arguments}")
+            if headless:
+                options.add_argument('--headless')
+            options.add_argument('--no-sandbox')
+            options.add_argument('--disable-dev-shm-usage')
+            options.add_argument('--disable-gpu')
+            options.add_argument(f'--window-size={window_width},{window_height}')
+            options.add_argument('--disable-extensions')
+            options.add_argument('--disable-plugins')
             context._chrome_user_data_dir = user_data_dir
             service = ChromeService(
                 executable_path='/usr/local/bin/chromedriver',
-                log_path='chromedriver.log',
-                service_args=['--verbose']
+                log_path='chromedriver.log'
             )
-            service.log_level = "ALL"
             context.driver = webdriver.Chrome(service=service, options=options)
             logger.info("Chrome browser initialized successfully with custom ChromeDriver")
             
