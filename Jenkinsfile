@@ -46,5 +46,10 @@ pipeline {
                 }
             }
         }
+        stage('Show ChromeDriver Log') {
+            steps {
+                sh 'cat chromedriver.log || echo "No chromedriver.log found"'
+            }
+        }
     }
 } 
