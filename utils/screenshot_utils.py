@@ -6,6 +6,7 @@ import os
 import logging
 from datetime import datetime
 from pathlib import Path
+from utils.settings_manager import settings_manager
 
 logger = logging.getLogger(__name__)
 
@@ -13,9 +14,10 @@ logger = logging.getLogger(__name__)
 class ScreenshotUtils:
     """Simple utility class for capturing screenshots"""
     
-    def __init__(self, driver, output_dir="screenshots"):
+    def __init__(self, driver, output_dir=None):
         self.driver = driver
-        self.output_dir = output_dir
+        # Get screenshot directory from settings, fallback to "screenshots"
+        self.output_dir = output_dir or settings_manager.get("screenshot_dir", "screenshots")
         self._ensure_output_dir()
     
     def _ensure_output_dir(self):
