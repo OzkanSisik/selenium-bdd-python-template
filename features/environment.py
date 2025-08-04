@@ -35,18 +35,10 @@ def before_scenario(context, scenario):
             window_width = settings_manager.get("window_width", 1920)
             window_height = settings_manager.get("window_height", 1080)
             
-            # Debug logging
-            logger.info(f"Environment: {settings_manager.environment}")
-            logger.info(f"Headless setting: {headless}")
-            logger.info(f"Window size: {window_width}x{window_height}")
-            
             user_data_dir = tempfile.mkdtemp(dir="/var/tmp")
             options.add_argument(f'--user-data-dir={user_data_dir}')
             if headless:
                 options.add_argument('--headless')
-                logger.info("Headless mode enabled")
-            else:
-                logger.info("Headless mode disabled")
             options.add_argument('--no-sandbox')
             options.add_argument('--disable-dev-shm-usage')
             options.add_argument('--disable-gpu')
@@ -54,6 +46,9 @@ def before_scenario(context, scenario):
             options.add_argument('--disable-extensions')
             options.add_argument('--disable-plugins')
             context._chrome_user_data_dir = user_data_dir
+            
+            # Log Chrome options
+            logger.info(f"Chrome options: {options.arguments}")
             
             # Use Selenium Manager for development, fixed ChromeDriver for staging/AWS
             if settings_manager.environment == Environments.DEVELOPMENT:
