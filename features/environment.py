@@ -51,7 +51,7 @@ def before_scenario(context, scenario):
                 else:
                     options.add_argument(f"{option}={value}")
             
-            user_data_dir = tempfile.mkdtemp()
+            user_data_dir = tempfile.mkdtemp(dir="/var/tmp")
             logger.info(f"Using user data dir: {user_data_dir}")
             options.add_argument(f'--user-data-dir={user_data_dir}')
             options.add_argument('--enable-logging')
