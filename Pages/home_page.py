@@ -13,7 +13,7 @@ class HomePage(BasePage):
     Page Object for Homepage
     """
     
-    HEADER = (By.CLASS_NAME, "navbar-brand")
+    HEADER = (By.CSS_SELECTOR, ".navbar-brand")
 
 
     def __init__(self, driver):
