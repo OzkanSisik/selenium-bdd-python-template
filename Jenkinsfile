@@ -6,17 +6,12 @@ pipeline {
         S3_BUCKET_NAME = 'ozkanbucket'
         S3_REGION = 'eu-central-1'
         ENVIRONMENT = 'staging'
-        HOME = '/tmp'
+        HOME = '/var/jenkins_home'
     }
     stages {
         stage('Show user info') {
             steps {
                 sh 'id -a'
-            }
-        }
-        stage('Prepare .local dir') {
-            steps {
-                sh 'mkdir -p /tmp/.local/share/applications && chown -R 1000:1000 /tmp/.local && chmod -R 700 /tmp/.local'
             }
         }
         stage('Show environment.py') {
