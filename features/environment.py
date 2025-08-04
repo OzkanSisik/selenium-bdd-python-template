@@ -7,7 +7,7 @@ import logging
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.safari.options import Options as SafariOptions
-from utils.settings_manager import settings_manager
+from utils.settings_manager import settings_manager, Environments
 from selenium.webdriver.chrome.service import Service as ChromeService
 import shutil
 import tempfile
