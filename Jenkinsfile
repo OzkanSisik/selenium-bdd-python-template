@@ -9,9 +9,15 @@ pipeline {
         HOME = '/tmp'
     }
     stages {
+        stage('Show user info') {
+            steps {
+                sh 'id -a'
+                sh 'whoami'
+            }
+        }
         stage('Prepare .local dir') {
             steps {
-                sh 'mkdir -p /tmp/.local/share/applications && chmod -R 777 /tmp/.local'
+                sh 'mkdir -p /tmp/.local/share/applications && chown -R jenkins:jenkins /tmp/.local && chmod -R 700 /tmp/.local'
             }
         }
         stage('Show environment.py') {
