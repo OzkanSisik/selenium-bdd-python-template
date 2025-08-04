@@ -5,6 +5,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from utils.settings_manager import settings_manager
+import time
 
 
 class HomePage(BasePage):
@@ -22,6 +23,7 @@ class HomePage(BasePage):
     def navigate_to_homepage(self):
         """Navigate to DemoBlaze homepage"""
         self.driver.get(self.BASE_URL)
+        time.sleep(6)
         self.wait_for_page_load()
         return HomePage(self.driver)
 
