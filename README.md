@@ -32,6 +32,7 @@ selenium-bdd-framework/
 - **Jenkins CI/CD**: Docker-based pipeline with AWS EC2
 - **Docker Containerization**: Isolated test environment
 - **Smart Driver Management**: Automatic driver detection for development, fixed driver for CI/CD
+- **Screenshot Support**: Automatic screenshots on test failures
 - **Security**: Credentials stored in environment variables, not in code
 
 ## Key Features
@@ -45,6 +46,10 @@ selenium-bdd-framework/
 - **Development Environment**: Automatic ChromeDriver detection and download
 - **CI/CD Environment**: Fixed ChromeDriver version from S3 for stability
 - Environment-aware configuration
+
+### 📸 **Screenshot Support**
+- **Automatic Capture**: Screenshots captured on test failures
+- **Organized Storage**: Saved with descriptive names and timestamps
 
 ### ☁️ **AWS Integration**
 - S3-based configuration management
@@ -129,6 +134,9 @@ timeout = 30
 
 [development]
 base_url = https://your-application-url.com
+headless = false
+test_username = testuser@example.com
+test_password = testpassword123 
 ```
 
 ### S3 Configuration (`s3_settings.ini`)
@@ -144,7 +152,13 @@ timeout = 30
 [staging]
 base_url = https://your-staging-url.com
 headless = true
+test_username = testuser@example.com
+test_password = testpassword123 
 ```
+
+## Screenshots
+
+Screenshots are automatically captured when tests fail and saved in the `screenshots/` directory with descriptive names including scenario name and timestamp.
 
 ## Running Tests
 
