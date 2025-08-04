@@ -6,8 +6,14 @@ pipeline {
         S3_BUCKET_NAME = 'ozkanbucket'
         S3_REGION = 'eu-central-1'
         ENVIRONMENT = 'staging'
+        HOME = '/tmp'
     }
     stages {
+        stage('Prepare .local dir') {
+            steps {
+                sh 'mkdir -p /tmp/.local/share/applications && chmod -R 777 /tmp/.local'
+            }
+        }
         stage('Show environment.py') {
             steps {
                 sh 'cat features/environment.py | head -40'
