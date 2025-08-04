@@ -12,12 +12,11 @@ pipeline {
         stage('Show user info') {
             steps {
                 sh 'id -a'
-                sh 'whoami'
             }
         }
         stage('Prepare .local dir') {
             steps {
-                sh 'mkdir -p /tmp/.local/share/applications && chown -R jenkins:jenkins /tmp/.local && chmod -R 700 /tmp/.local'
+                sh 'mkdir -p /tmp/.local/share/applications && chown -R 1000:1000 /tmp/.local && chmod -R 700 /tmp/.local'
             }
         }
         stage('Show environment.py') {
