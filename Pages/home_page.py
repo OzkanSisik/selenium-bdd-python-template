@@ -29,7 +29,7 @@ class HomePage(BasePage):
 
     def wait_for_page_load(self):
         """Waits for the page to fully load"""
-        self.wait.until(EC.presence_of_element_located(self.HEADER))
+        self.wait_for_element_visible(self.HEADER)
     
     def is_on_homepage(self):
         """Check if currently on homepage"""
