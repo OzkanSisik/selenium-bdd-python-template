@@ -8,14 +8,15 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.safari.options import Options as SafariOptions
 from utils.settings_manager import settings_manager, Environments
+from utils.screenshot_utils import ScreenshotUtils
 from selenium.webdriver.chrome.service import Service as ChromeService
 import shutil
 import tempfile
 import os
+import traceback
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
-
 
 
 def before_scenario(context, scenario):
@@ -67,6 +68,10 @@ def before_scenario(context, scenario):
         else:
             raise ValueError(f"Unsupported browser: {browser}")   
         
+        # Initialize screenshot utilities
+        context.screenshot_utils = ScreenshotUtils(context.driver)
+        logger.info("Screenshot utilities initialized")
+        
         logger.info("Browser setup completed successfully")
         
     except Exception as e:
@@ -76,19 +81,50 @@ def before_scenario(context, scenario):
 
 def after_scenario(context, scenario):
     """
-    Cleans up browser after each scenario.
+    Cleans up browser after each scenario and captures screenshot on failure.
     This runs after every test scenario in behave.
     """
+    # Capture screenshot if scenario failed
+    if scenario.status == "failed":
+        logger.error(f"Scenario failed: {scenario.name}")
+        
+        try:
+            # Capture screenshot
+            if hasattr(context, 'screenshot_utils'):
+                screenshot_path = context.screenshot_utils.capture_screenshot_on_failure(
+                    scenario.name, "scenario_failure"
+                )
+                if screenshot_path:
+                    logger.info(f"Screenshot captured: {screenshot_path}")
+                    print(f"\n📸 Screenshot saved: {screenshot_path}")
+            
+        except Exception as e:
+            logger.error(f"Failed to capture screenshot: {str(e)}")
+            # Fallback: try to capture screenshot without utility
+            try:
+                if hasattr(context, 'driver'):
+                    from datetime import datetime
+                    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                    filename = f"failure_{scenario.name}_{timestamp}.png"
+                    filepath = os.path.join("screenshots", filename)
+                    os.makedirs("screenshots", exist_ok=True)
+                    context.driver.save_screenshot(filepath)
+                    logger.info(f"Fallback screenshot saved: {filepath}")
+                    print(f"\n📸 Fallback screenshot: {filepath}")
+            except Exception as fallback_error:
+                logger.error(f"Fallback screenshot also failed: {str(fallback_error)}")
+    
+    # Clean up browser
     if hasattr(context, 'driver'):
         try:
             context.driver.quit()
             logger.info(f"Browser closed successfully after scenario: {scenario.name}")
         except Exception as e:
             logger.warning(f"Error closing browser: {str(e)}")
+    
     # Clear user data directory
     if hasattr(context, '_chrome_user_data_dir'):
         try:
             shutil.rmtree(context._chrome_user_data_dir)
         except Exception as e:
-            logger.warning(f"User data directory silinemedi: {e}")
-    
+            logger.warning(f"User data directory silinemedi: {e}")   

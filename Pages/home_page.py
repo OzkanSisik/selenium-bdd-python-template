@@ -23,7 +23,6 @@ class HomePage(BasePage):
     def navigate_to_homepage(self):
         """Navigate to DemoBlaze homepage"""
         self.driver.get(self.BASE_URL)
-        time.sleep(6)
         self.wait_for_page_load()
         return HomePage(self.driver)
 
